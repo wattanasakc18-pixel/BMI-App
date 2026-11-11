@@ -8,278 +8,367 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --mint:  #4ecdc4;
-      --teal:  #2cb5a0;
-      --card:  #ffffff;
-      --text:  #1e2d2b;
-      --muted: #8fa8a5;
-      --border:#daeee9;
-      --radius:18px;
-    }
-
     body {
       font-family: 'Prompt', sans-serif;
-      background: linear-gradient(160deg, #d4f0ec 0%, #e8f5f3 50%, #ddeef8 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px 16px;
+      padding: 24px 16px 40px;
+      /* Wallpaper-style background */
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(120,220,255,0.55) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 10%, rgba(180,130,255,0.45) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, rgba(100,220,180,0.45) 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 85%, rgba(255,160,120,0.35) 0%, transparent 50%),
+        linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      overflow-x: hidden;
+    }
+
+    /* Floating orbs */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(100,210,255,0.3), transparent 70%);
+      top: -80px; left: -80px;
+      animation: float1 8s ease-in-out infinite;
+    }
+    body::after {
+      width: 250px; height: 250px;
+      background: radial-gradient(circle, rgba(180,100,255,0.25), transparent 70%);
+      bottom: -60px; right: -60px;
+      animation: float2 10s ease-in-out infinite;
+    }
+
+    @keyframes float1 {
+      0%,100% { transform: translate(0,0); }
+      50%      { transform: translate(30px,40px); }
+    }
+    @keyframes float2 {
+      0%,100% { transform: translate(0,0); }
+      50%      { transform: translate(-25px,-35px); }
     }
 
     /* ---- Phone frame ---- */
     .phone {
+      position: relative;
+      z-index: 1;
       width: 100%;
       max-width: 390px;
-      background: var(--card);
-      border-radius: 40px;
-      box-shadow: 0 24px 64px rgba(44,181,160,0.18), 0 4px 16px rgba(0,0,0,0.10);
+      border-radius: 44px;
+      overflow: hidden;
+      /* Liquid Glass outer shell */
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(40px) saturate(180%);
+      -webkit-backdrop-filter: blur(40px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow:
+        0 32px 80px rgba(0,0,0,0.45),
+        0 8px 32px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.3),
+        inset 0 -1px 0 rgba(255,255,255,0.08);
+    }
+
+    /* ---- Header ---- */
+    .header {
+      padding: 28px 24px 24px;
+      position: relative;
+      background: rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header .sub { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+    .header .title { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+
+    .header-icon {
+      width: 46px; height: 46px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .header-icon svg { width: 22px; height: 22px; stroke: rgba(255,255,255,0.9); fill: none; }
+
+    /* ---- Inner ---- */
+    .inner { padding: 24px 20px 28px; }
+
+    /* ---- Glass card ---- */
+    .glass-card {
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 22px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.2),
+        0 4px 20px rgba(0,0,0,0.15);
+      margin-bottom: 14px;
       overflow: hidden;
     }
 
-    /* Header */
-    .notch-bar {
-      background: linear-gradient(90deg, var(--mint) 0%, #38d4c8 100%);
-      padding: 18px 24px 22px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      position: relative;
-    }
-    .notch-bar::after {
-      content: '';
-      position: absolute;
-      bottom: -16px; left: 0; right: 0;
-      height: 32px;
-      background: linear-gradient(90deg, var(--mint) 0%, #38d4c8 100%);
-      border-radius: 0 0 50% 50% / 0 0 100% 100%;
-    }
-    .nb-title { color: rgba(255,255,255,0.80); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
-    .nb-name  { color: #fff; font-size: 22px; font-weight: 700; line-height: 1.1; }
-    .nb-icon  {
-      width: 44px; height: 44px;
-      background: rgba(255,255,255,0.18);
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      position: relative; z-index: 1;
-    }
-    .nb-icon svg { width: 24px; height: 24px; stroke: #fff; fill: none; }
-
-    /* Inner */
-    .inner { padding: 32px 22px 28px; }
-
+    /* ---- Section label ---- */
     .sec-label {
-      font-size: 11px; font-weight: 600; letter-spacing: 1.2px;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+      font-size: 11px; font-weight: 600; letter-spacing: 1.4px;
+      text-transform: uppercase; color: rgba(255,255,255,0.45);
+      margin-bottom: 10px; padding-left: 2px;
     }
 
-    /* Gender toggle */
+    /* ---- Gender toggle ---- */
     .gender-wrap {
       display: flex;
-      background: #f0f9f8;
+      background: rgba(255,255,255,0.06);
       border-radius: 999px;
       padding: 4px;
-      margin-bottom: 20px;
-      border: 1.5px solid var(--border);
+      margin-bottom: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
     }
+
     .g-btn {
-      flex: 1; padding: 11px 10px; border: none; background: transparent;
-      border-radius: 999px; cursor: pointer; font-family: 'Prompt', sans-serif;
-      font-size: 14px; font-weight: 500; color: var(--muted);
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      transition: all 0.22s ease;
+      flex: 1; padding: 12px 10px; border: none;
+      background: transparent; border-radius: 999px;
+      cursor: pointer; font-family: 'Prompt', sans-serif;
+      font-size: 14px; font-weight: 500;
+      color: rgba(255,255,255,0.45);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all 0.25s ease;
     }
-    .g-btn .g-icon { width: 18px; height: 18px; flex-shrink: 0; }
-    .g-btn .g-icon svg { width: 18px; height: 18px; stroke: var(--muted); fill: none; transition: stroke 0.22s; }
+    .g-btn .g-icon { width: 17px; height: 17px; flex-shrink: 0; }
+    .g-btn .g-icon svg { width: 17px; height: 17px; stroke: rgba(255,255,255,0.4); fill: none; transition: stroke 0.25s; }
+
     .g-btn.active {
-      background: linear-gradient(135deg, var(--mint) 0%, var(--teal) 100%);
+      background: rgba(255,255,255,0.18);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(78,205,196,0.35);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 12px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.25);
     }
     .g-btn.active .g-icon svg { stroke: #fff; }
 
-    /* Input row — 3 columns */
-    .input-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+    /* ---- Input row ---- */
+    .input-row { display: flex; gap: 10px; margin-bottom: 14px; }
 
     .input-card {
-      flex: 1;
-      background: #f7fdfc;
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius);
+      flex: 1; min-width: 0;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
       padding: 14px 12px 12px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      min-width: 0;
+      transition: all 0.2s;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.15);
     }
     .input-card:focus-within {
-      border-color: var(--mint);
-      box-shadow: 0 0 0 3px rgba(78,205,196,0.12);
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.35);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 0 0 3px rgba(255,255,255,0.07);
     }
-    .input-card .ic-top {
-      display: flex; align-items: center; gap: 5px; margin-bottom: 8px;
-    }
+
+    .input-card .ic-top { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
     .input-card .ic-icon {
       width: 24px; height: 24px;
-      background: linear-gradient(135deg, var(--mint) 0%, var(--teal) 100%);
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 7px;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
     }
-    .input-card .ic-icon svg { width: 13px; height: 13px; stroke: #fff; fill: none; }
-    .input-card label {
-      font-size: 10px; font-weight: 600; letter-spacing: 0.6px;
-      text-transform: uppercase; color: var(--muted);
-    }
-    .input-card .field-row {
-      display: flex; align-items: baseline; gap: 3px;
-    }
+    .input-card .ic-icon svg { width: 13px; height: 13px; stroke: rgba(255,255,255,0.85); fill: none; }
+    .input-card label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(255,255,255,0.45); }
+
+    .input-card .field-row { display: flex; align-items: baseline; gap: 3px; }
     .input-card input {
       border: none; outline: none; background: transparent;
       font-family: 'Prompt', sans-serif;
-      font-size: 28px; font-weight: 700; color: var(--text);
-      width: 100%;
-      -moz-appearance: textfield;
+      font-size: 28px; font-weight: 700; color: #fff;
+      width: 100%; -moz-appearance: textfield;
     }
     .input-card input::-webkit-outer-spin-button,
     .input-card input::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .input-card input::placeholder { color: #cce8e5; }
-    .input-card .unit {
-      font-size: 12px; font-weight: 500; color: var(--muted);
-      white-space: nowrap; padding-bottom: 4px;
-    }
+    .input-card input::placeholder { color: rgba(255,255,255,0.2); }
+    .input-card .unit { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.4); white-space: nowrap; padding-bottom: 4px; }
 
-    /* Age group badge */
+    /* ---- Age badge ---- */
     .age-badge {
       display: none;
-      background: #f0f9f8;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
       padding: 10px 14px;
-      margin-bottom: 16px;
-      font-size: 12.5px;
-      color: var(--teal);
-      font-weight: 500;
+      margin-bottom: 14px;
+      font-size: 12px; color: rgba(255,255,255,0.65); font-weight: 400;
+      align-items: center; gap: 8px;
     }
-    .age-badge.show { display: flex; align-items: center; gap: 8px; }
-    .age-badge svg  { width: 15px; height: 15px; stroke: var(--teal); fill: none; flex-shrink: 0; }
+    .age-badge.show { display: flex; }
+    .age-badge svg { width: 14px; height: 14px; stroke: rgba(255,255,255,0.5); fill: none; flex-shrink: 0; }
 
-    /* Error */
+    /* ---- Error ---- */
     .error {
-      display: none; font-size: 13px; color: #e05252;
-      background: #fff2f2; border: 1.5px solid #fcc;
-      border-radius: 12px; padding: 11px 14px; margin-bottom: 16px; text-align: center;
+      display: none; font-size: 13px;
+      color: rgba(255,120,120,0.95);
+      background: rgba(255,80,80,0.12);
+      border: 1px solid rgba(255,100,100,0.25);
+      border-radius: 12px; padding: 11px 14px;
+      margin-bottom: 14px; text-align: center;
     }
     .error.show { display: block; }
 
-    /* Calc button */
+    /* ---- Calc button ---- */
     .btn-calc {
-      width: 100%; padding: 17px;
-      background: linear-gradient(135deg, #4ecdc4 0%, #2cb5a0 100%);
-      border: none; border-radius: 999px; color: #fff;
+      width: 100%; padding: 17px; border: none; border-radius: 999px;
       font-family: 'Prompt', sans-serif; font-size: 16px; font-weight: 600;
-      cursor: pointer; box-shadow: 0 6px 20px rgba(78,205,196,0.40);
-      transition: transform 0.14s, box-shadow 0.14s; margin-bottom: 24px;
+      color: #fff; cursor: pointer; margin-bottom: 20px;
+      position: relative; overflow: hidden;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.4),
+        inset 0 -1px 0 rgba(0,0,0,0.1),
+        0 8px 24px rgba(0,0,0,0.25);
+      transition: all 0.18s ease;
+      letter-spacing: 0.3px;
     }
-    .btn-calc:hover  { box-shadow: 0 8px 24px rgba(78,205,196,0.50); transform: translateY(-1px); }
-    .btn-calc:active { transform: scale(0.97); box-shadow: 0 3px 12px rgba(78,205,196,0.30); }
+    .btn-calc::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .btn-calc:hover {
+      background: rgba(255,255,255,0.24);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 10px 32px rgba(0,0,0,0.3);
+      transform: translateY(-1px);
+    }
+    .btn-calc:active { transform: scale(0.97); opacity: 0.85; }
 
-    /* Result */
+    /* ---- Result ---- */
     .result { display: none; }
-    .result.show { display: block; animation: fadeUp 0.38s cubic-bezier(.4,0,.2,1); }
+    .result.show { display: block; animation: fadeUp 0.4s cubic-bezier(.4,0,.2,1); }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
+      from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* Result main card */
     .res-card {
-      border-radius: var(--radius); padding: 22px 20px;
+      border-radius: 22px; padding: 22px 20px;
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 12px; position: relative; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 4px 20px rgba(0,0,0,0.2);
     }
-    .res-card.clr-normal      { background: #f0fdf8; }
-    .res-card.clr-underweight { background: #fffbf0; }
-    .res-card.clr-overweight  { background: #fff8f0; }
-    .res-card.clr-obese       { background: #fff4f4; }
+    .res-card.clr-normal      { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.3); }
+    .res-card.clr-underweight { background: rgba(251,191,36,0.15);  border-color: rgba(251,191,36,0.3); }
+    .res-card.clr-overweight  { background: rgba(251,146,60,0.15);  border-color: rgba(251,146,60,0.3); }
+    .res-card.clr-obese       { background: rgba(248,113,113,0.15); border-color: rgba(248,113,113,0.3); }
 
-    .bmi-big   { font-size: 58px; font-weight: 700; line-height: 1; letter-spacing: -2px; color: var(--text); }
-    .bmi-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .bmi-big   { font-size: 60px; font-weight: 700; line-height: 1; letter-spacing: -3px; color: #fff; }
+    .bmi-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 5px; }
 
     .res-right { text-align: right; }
     .status-pill {
       display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 14px; border-radius: 999px;
-      font-size: 14px; font-weight: 600; margin-bottom: 6px;
+      padding: 7px 14px; border-radius: 999px;
+      font-size: 13px; font-weight: 600; margin-bottom: 7px;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
     }
-    .status-pill .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; }
 
-    .clr-normal      .status-pill { background: #dcfce7; color: #16a34a; }
-    .clr-normal      .dot         { background: #22c55e; }
-    .clr-underweight .status-pill { background: #fef9c3; color: #b45309; }
-    .clr-underweight .dot         { background: #f59e0b; }
-    .clr-overweight  .status-pill { background: #ffedd5; color: #c2410c; }
-    .clr-overweight  .dot         { background: #f97316; }
-    .clr-obese       .status-pill { background: #fee2e2; color: #b91c1c; }
-    .clr-obese       .dot         { background: #ef4444; }
+    .clr-normal      .status-pill { background: rgba(52,211,153,0.25); color: #6ee7b7; }
+    .clr-normal      .dot         { background: #34d399; box-shadow: 0 0 6px #34d399; }
+    .clr-underweight .status-pill { background: rgba(251,191,36,0.25); color: #fde68a; }
+    .clr-underweight .dot         { background: #fbbf24; box-shadow: 0 0 6px #fbbf24; }
+    .clr-overweight  .status-pill { background: rgba(251,146,60,0.25); color: #fed7aa; }
+    .clr-overweight  .dot         { background: #fb923c; box-shadow: 0 0 6px #fb923c; }
+    .clr-obese       .status-pill { background: rgba(248,113,113,0.25); color: #fecaca; }
+    .clr-obese       .dot         { background: #f87171; box-shadow: 0 0 6px #f87171; }
 
-    .g-crit { font-size: 11px; color: var(--muted); line-height: 1.5; }
+    .g-crit { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.6; }
 
     /* Bar */
     .bar-box {
-      background: #f7fdfc; border: 1.5px solid var(--border);
-      border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px; padding: 16px 18px; margin-bottom: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
     }
     .bar-track {
-      height: 10px; border-radius: 999px;
-      background: linear-gradient(to right, #fbbf24 0%, #34d399 35%, #fb923c 68%, #ef4444 100%);
+      height: 8px; border-radius: 999px;
+      background: linear-gradient(to right,
+        rgba(251,191,36,0.9) 0%,
+        rgba(52,211,153,0.9) 35%,
+        rgba(251,146,60,0.9) 68%,
+        rgba(248,113,113,0.9) 100%);
       position: relative;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
     }
     .bar-thumb {
-      position: absolute; top: 50%; transform: translate(-50%, -50%);
-      width: 20px; height: 20px; background: #fff;
-      border: 3px solid var(--text); border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      position: absolute; top: 50%; transform: translate(-50%,-50%);
+      width: 18px; height: 18px;
+      background: rgba(255,255,255,0.95);
+      border: 2.5px solid rgba(255,255,255,0.6);
+      border-radius: 50%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.8);
       transition: left 0.55s cubic-bezier(.4,0,.2,1);
     }
     .bar-labels {
       display: flex; justify-content: space-between;
-      margin-top: 10px; font-size: 11px; color: var(--muted); font-weight: 500;
+      margin-top: 10px; font-size: 11px;
+      color: rgba(255,255,255,0.35); font-weight: 500;
     }
 
     /* Tip */
     .tip-box {
-      background: linear-gradient(135deg, #f0fdf8 0%, #e8faf8 100%);
-      border: 1.5px solid #c0ece7;
-      border-radius: var(--radius); padding: 16px 18px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px; padding: 16px 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
     }
     .tip-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
     .tip-icon {
       width: 28px; height: 28px;
-      background: linear-gradient(135deg, var(--mint), var(--teal));
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
     }
-    .tip-icon svg { width: 15px; height: 15px; stroke: #fff; fill: none; }
-    .tip-head span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
-    .tip-text { font-size: 13.5px; color: #3d6b65; line-height: 1.7; }
+    .tip-icon svg { width: 14px; height: 14px; stroke: rgba(255,255,255,0.8); fill: none; }
+    .tip-head span { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.5); }
+    .tip-text { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.75; }
 
-    .bottom-pad { height: 8px; }
+    .bottom-pad { height: 4px; }
   </style>
 </head>
 <body>
 <div class="phone">
 
   <!-- Header -->
-  <div class="notch-bar">
-    <div>
-      <div class="nb-title">ดัชนีมวลกาย</div>
-      <div class="nb-name">BMI Calculator</div>
-    </div>
-    <div class="nb-icon">
-      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 12h3l3-7 4 14 3-7h5"/>
-      </svg>
+  <div class="header">
+    <div class="header-row">
+      <div>
+        <div class="sub">ดัชนีมวลกาย</div>
+        <div class="title">BMI Calculator</div>
+      </div>
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h3l3-7 4 14 3-7h5"/>
+        </svg>
+      </div>
     </div>
   </div>
 
@@ -291,7 +380,8 @@
       <button class="g-btn active" id="btn-male" onclick="selectGender('male')">
         <span class="g-icon">
           <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="10" cy="14" r="6"/><line x1="14.5" y1="9.5" x2="20" y2="4"/>
+            <circle cx="10" cy="14" r="6"/>
+            <line x1="14.5" y1="9.5" x2="20" y2="4"/>
             <polyline points="16 4 20 4 20 8"/>
           </svg>
         </span>ชาย
@@ -299,16 +389,18 @@
       <button class="g-btn" id="btn-female" onclick="selectGender('female')">
         <span class="g-icon">
           <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="9" r="6"/><line x1="12" y1="15" x2="12" y2="21"/>
+            <circle cx="12" cy="9" r="6"/>
+            <line x1="12" y1="15" x2="12" y2="21"/>
             <line x1="9" y1="19" x2="15" y2="19"/>
           </svg>
         </span>หญิง
       </button>
     </div>
 
-    <!-- Inputs: weight | height | age -->
+    <!-- Inputs -->
     <div class="sec-label">ข้อมูลร่างกาย</div>
     <div class="input-row">
+
       <div class="input-card">
         <div class="ic-top">
           <div class="ic-icon">
@@ -348,8 +440,8 @@
             <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2"/>
               <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8"  y1="2" x2="8"  y2="6"/>
-              <line x1="3"  y1="10" x2="21" y2="10"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
           </div>
           <label>อายุ</label>
@@ -359,9 +451,10 @@
           <span class="unit">ปี</span>
         </div>
       </div>
+
     </div>
 
-    <!-- Age group notice -->
+    <!-- Age badge -->
     <div class="age-badge" id="age-badge">
       <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -379,6 +472,7 @@
 
     <!-- Result -->
     <div class="result" id="result">
+
       <div class="res-card" id="res-card">
         <div class="res-left">
           <div class="bmi-big" id="bmi-big">—</div>
@@ -415,6 +509,7 @@
         </div>
         <div class="tip-text" id="tip-text"></div>
       </div>
+
     </div>
 
     <div class="bottom-pad"></div>
@@ -430,35 +525,22 @@
     document.getElementById('btn-female').classList.toggle('active', g === 'female');
   }
 
-  // -------------------------------------------------------
-  // เกณฑ์ BMI แบ่งตามกลุ่มอายุ (อ้างอิง WHO + กรมอนามัย)
-  // -------------------------------------------------------
-
-  // ผู้ใหญ่ 20 ปีขึ้นไป → cutoff ตายตัว ปรับตามเพศ (Asian criteria)
-  function classifyAdult(bmi, g) {
-    // ชาย: ปกติ 18.5–22.9, เกิน 23–24.9, อ้วน ≥25 (WHO Asian)
-    // หญิง: ปกติ 18.5–22.9, เกิน 23–24.9, อ้วน ≥25 (เหมือนกัน แต่เพศหญิงมีไขมันสูงกว่าที่ BMI เท่ากัน)
-    // ใช้ Asian cutoff ที่ WHO แนะนำสำหรับประชากรเอเชีย
-    if (bmi < 18.5) return { key: 'underweight', label: 'น้ำหนักน้อย',  tip: 'น้ำหนักต่ำกว่าเกณฑ์ ควรเพิ่มการรับประทานอาหารที่มีโปรตีนและพลังงานสูง และปรึกษาแพทย์หากจำเป็น' };
-    if (bmi < 23.0) return { key: 'normal',      label: 'ปกติ',         tip: 'น้ำหนักอยู่ในเกณฑ์ดี รักษาพฤติกรรมการกินที่ดีและออกกำลังกายสม่ำเสมอไว้ได้เลย' };
-    if (bmi < 25.0) return { key: 'overweight',  label: 'น้ำหนักเกิน',  tip: 'BMI เข้าสู่ระดับน้ำหนักเกินตามเกณฑ์ Asian ควรระวังอาหารแคลอรีสูงและเพิ่มการออกกำลังกาย' };
-    if (bmi < 30.0) return { key: 'obese',       label: 'อ้วนระดับ 1',  tip: 'BMI อยู่ในระดับอ้วน ควรปรับพฤติกรรมการกินและออกกำลังกายอย่างสม่ำเสมอ ปรึกษาแพทย์เพื่อวางแผน' };
-    return                 { key: 'obese',        label: 'อ้วนระดับ 2',  tip: 'BMI สูงมาก ควรพบแพทย์เพื่อประเมินความเสี่ยงและวางแผนลดน้ำหนักอย่างปลอดภัย' };
+  function classifyAdult(bmi) {
+    if (bmi < 18.5) return { key:'underweight', label:'น้ำหนักน้อย',  tip:'น้ำหนักต่ำกว่าเกณฑ์ ควรเพิ่มการรับประทานอาหารที่มีโปรตีนและพลังงานสูง และปรึกษาแพทย์หากจำเป็น' };
+    if (bmi < 23.0) return { key:'normal',      label:'ปกติ',         tip:'น้ำหนักอยู่ในเกณฑ์ดี รักษาพฤติกรรมการกินที่ดีและออกกำลังกายสม่ำเสมอไว้ได้เลย' };
+    if (bmi < 25.0) return { key:'overweight',  label:'น้ำหนักเกิน',  tip:'BMI เข้าสู่ระดับน้ำหนักเกินตามเกณฑ์ Asian ควรระวังอาหารแคลอรีสูงและเพิ่มการออกกำลังกาย' };
+    if (bmi < 30.0) return { key:'obese',       label:'อ้วนระดับ 1',  tip:'BMI อยู่ในระดับอ้วน ควรปรับพฤติกรรมการกินและออกกำลังกายอย่างสม่ำเสมอ ปรึกษาแพทย์เพื่อวางแผน' };
+    return                 { key:'obese',       label:'อ้วนระดับ 2',  tip:'BMI สูงมาก ควรพบแพทย์เพื่อประเมินความเสี่ยงและวางแผนลดน้ำหนักอย่างปลอดภัย' };
   }
 
-  // ผู้สูงอายุ 60 ปีขึ้นไป → เกณฑ์ผ่อนปรนขึ้นเล็กน้อย (ไขมันสำรองมีประโยชน์)
   function classifyElderly(bmi) {
-    if (bmi < 20.0) return { key: 'underweight', label: 'น้ำหนักน้อย',  tip: 'สำหรับผู้สูงอายุ BMI ต่ำกว่า 20 มีความเสี่ยงต่อกล้ามเนื้อลีบและกระดูกบาง ควรปรึกษาแพทย์และนักโภชนาการ' };
-    if (bmi < 24.0) return { key: 'normal',      label: 'ปกติ',         tip: 'BMI อยู่ในเกณฑ์ที่เหมาะสมสำหรับผู้สูงอายุ รับประทานอาหารโปรตีนสูงและออกกำลังกายเพื่อรักษามวลกล้ามเนื้อ' };
-    if (bmi < 27.5) return { key: 'overweight',  label: 'น้ำหนักเกิน',  tip: 'สำหรับผู้สูงอายุ BMI ในช่วงนี้ยังยอมรับได้ แต่ควรระวังโรคเรื้อรัง ปรึกษาแพทย์เพื่อติดตามสุขภาพ' };
-    return                  { key: 'obese',       label: 'อ้วน',         tip: 'BMI สูงเกินเกณฑ์ ควรพบแพทย์เพื่อประเมินความเสี่ยงและหาแนวทางดูแลสุขภาพที่เหมาะกับช่วงวัย' };
+    if (bmi < 20.0) return { key:'underweight', label:'น้ำหนักน้อย', tip:'สำหรับผู้สูงอายุ BMI ต่ำกว่า 20 มีความเสี่ยงต่อกล้ามเนื้อลีบและกระดูกบาง ควรปรึกษาแพทย์' };
+    if (bmi < 24.0) return { key:'normal',      label:'ปกติ',        tip:'BMI อยู่ในเกณฑ์เหมาะสมสำหรับผู้สูงอายุ รับประทานโปรตีนและออกกำลังกายเพื่อรักษามวลกล้ามเนื้อ' };
+    if (bmi < 27.5) return { key:'overweight',  label:'น้ำหนักเกิน', tip:'BMI ในช่วงนี้ยังยอมรับได้สำหรับผู้สูงอายุ แต่ควรระวังโรคเรื้อรัง ปรึกษาแพทย์เป็นระยะ' };
+    return                  { key:'obese',       label:'อ้วน',        tip:'BMI สูงเกินเกณฑ์ ควรพบแพทย์เพื่อประเมินความเสี่ยงและวางแผนดูแลสุขภาพที่เหมาะกับช่วงวัย' };
   }
 
-  // เด็กและวัยรุ่น 2–19 ปี → ใช้ Percentile ตาม CDC/WHO BMI-for-age
-  // ข้อมูล percentile ตาราง WHO (ค่าประมาณ) แยกชาย/หญิง ทุก 1 ปี
-  // p5 = ขอบล่าง (ผอม), p85 = เริ่มเกิน, p95 = อ้วน
   const bmiPercentile = {
-    // [age]: { male: [p5, p85, p95], female: [p5, p85, p95] }
     2:  { male:[14.5,17.3,18.4], female:[14.1,17.3,18.4] },
     3:  { male:[14.0,16.8,17.9], female:[13.7,16.8,18.0] },
     4:  { male:[13.7,16.5,17.6], female:[13.4,16.6,17.9] },
@@ -480,14 +562,13 @@
   };
 
   function classifyChild(bmi, age, g) {
-    const ref = bmiPercentile[age] ? bmiPercentile[age][g] : null;
-    if (!ref) return classifyAdult(bmi, g); // fallback
-
-    const [p5, p85, p95] = ref;
-    if (bmi < p5)  return { key: 'underweight', label: 'ผอม (< P5)',   tip: `BMI ต่ำกว่า Percentile ที่ 5 ของเด็กอายุ ${age} ปี ควรพบแพทย์และนักโภชนาการเพื่อประเมินการเจริญเติบโต` };
-    if (bmi < p85) return { key: 'normal',      label: 'ปกติ (P5–P85)', tip: `BMI อยู่ในเกณฑ์ปกติสำหรับเด็กอายุ ${age} ปี รับประทานอาหารครบ 5 หมู่และออกกำลังกายสม่ำเสมอ` };
-    if (bmi < p95) return { key: 'overweight',  label: 'เริ่มอ้วน (P85–P95)', tip: `BMI เกิน Percentile ที่ 85 ควรปรับอาหารและกิจกรรมทางกายให้เหมาะกับช่วงวัย ปรึกษาแพทย์` };
-    return               { key: 'obese',        label: 'อ้วน (≥ P95)',  tip: `BMI เกิน Percentile ที่ 95 ควรพบแพทย์เด็กเพื่อประเมินและวางแผนดูแลสุขภาพอย่างใกล้ชิด` };
+    const ref = bmiPercentile[age]?.[g];
+    if (!ref) return classifyAdult(bmi);
+    const [p5,p85,p95] = ref;
+    if (bmi < p5)  return { key:'underweight', label:'ผอม (< P5)',         tip:`BMI ต่ำกว่า Percentile ที่ 5 ของเด็กอายุ ${age} ปี ควรพบแพทย์และนักโภชนาการเพื่อประเมินการเจริญเติบโต` };
+    if (bmi < p85) return { key:'normal',      label:'ปกติ (P5–P85)',      tip:`BMI อยู่ในเกณฑ์ปกติสำหรับเด็กอายุ ${age} ปี รับประทานอาหารครบ 5 หมู่และออกกำลังกายสม่ำเสมอ` };
+    if (bmi < p95) return { key:'overweight',  label:'เริ่มอ้วน (P85–P95)', tip:`BMI เกิน Percentile ที่ 85 ควรปรับอาหารและกิจกรรมทางกายให้เหมาะสม ปรึกษาแพทย์` };
+    return               { key:'obese',        label:'อ้วน (≥ P95)',        tip:`BMI เกิน Percentile ที่ 95 ควรพบแพทย์เด็กเพื่อประเมินและวางแผนดูแลสุขภาพอย่างใกล้ชิด` };
   }
 
   function getAgeGroup(age) {
@@ -501,13 +582,11 @@
     return Math.min(Math.max((bmi - 15) / 25 * 100, 2), 97);
   }
 
-  // อัปเดต badge กลุ่มอายุ เมื่อกรอกอายุ
   document.getElementById('age').addEventListener('input', function() {
     const age = parseInt(this.value);
     const badge = document.getElementById('age-badge');
     const badgeText = document.getElementById('age-badge-text');
     if (!age || age < 2 || age > 120) { badge.classList.remove('show'); return; }
-
     const g = getAgeGroup(age);
     const msgs = {
       child:   `เด็ก/วัยรุ่น (${age} ปี) — ใช้เกณฑ์ Percentile ตามอายุ`,
@@ -526,19 +605,15 @@
     const resEl = document.getElementById('result');
 
     if (!w || !h || !age || w <= 0 || h <= 0 || age < 2 || age > 120 || w > 300 || h > 300) {
-      errEl.classList.add('show');
-      resEl.classList.remove('show');
-      return;
+      errEl.classList.add('show'); resEl.classList.remove('show'); return;
     }
     errEl.classList.remove('show');
 
     const bmi = w / Math.pow(h / 100, 2);
     const val = Math.round(bmi * 10) / 10;
-
     const ageGroup = getAgeGroup(age);
-    let cat;
-    let critLabel;
 
+    let cat, critLabel;
     if (ageGroup === 'child') {
       cat = classifyChild(bmi, age, gender);
       critLabel = `เกณฑ์เด็ก ${age} ปี (Percentile)`;
@@ -546,15 +621,15 @@
       cat = classifyElderly(bmi);
       critLabel = `เกณฑ์ผู้สูงอายุ (${age} ปี)`;
     } else {
-      cat = classifyAdult(bmi, gender);
+      cat = classifyAdult(bmi);
       critLabel = `เกณฑ์ Asian${gender === 'male' ? ' — ชาย' : ' — หญิง'}`;
     }
 
-    document.getElementById('bmi-big').textContent      = val.toFixed(1);
-    document.getElementById('status-text').textContent  = cat.label;
-    document.getElementById('g-crit').textContent       = critLabel;
-    document.getElementById('tip-text').textContent     = cat.tip;
-    document.getElementById('bar-thumb').style.left     = toPct(bmi) + '%';
+    document.getElementById('bmi-big').textContent     = val.toFixed(1);
+    document.getElementById('status-text').textContent = cat.label;
+    document.getElementById('g-crit').textContent      = critLabel;
+    document.getElementById('tip-text').textContent    = cat.tip;
+    document.getElementById('bar-thumb').style.left    = toPct(bmi) + '%';
 
     const colorMap = { underweight:'clr-underweight', normal:'clr-normal', overweight:'clr-overweight', obese:'clr-obese' };
     document.getElementById('res-card').className = 'res-card ' + colorMap[cat.key];
@@ -562,7 +637,7 @@
     resEl.classList.remove('show');
     void resEl.offsetWidth;
     resEl.classList.add('show');
-    setTimeout(() => resEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    setTimeout(() => resEl.scrollIntoView({ behavior:'smooth', block:'nearest' }), 50);
   }
 
   document.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
